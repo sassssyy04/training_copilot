@@ -1,0 +1,13 @@
+#copilot-overlay {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  max-width: 300px;
+  z-index: 9999;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}

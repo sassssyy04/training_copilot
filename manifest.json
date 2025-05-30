@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Training Copilot",
+  "version": "1.0",
+  "description": "Live training assistant overlay",
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://localhost:4000/*",
+    "http://localhost:4001/*",
+    "<all_urls>"
+  ],
+  "action": {
+    "default_title": "Activate Copilot"
+    // "default_icon": {
+    //   "16": "icon16.png",
+    //   "48": "icon48.png",
+    //   "128": "icon128.png"
+    // }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "web_accessible_resources": [{
+    "resources": ["content.js"],
+    "matches": ["<all_urls>"]
+  }]
+}

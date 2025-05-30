@@ -1,0 +1,15 @@
+{
+  "demo123": {
+    "steps": [
+      {
+        "step": 1,
+        "instruction": "Open commit history"
+      },
+      {
+        "step": 2,
+        "instruction": "delete existing branch"
+      }
+    ],
+    "progress": 0
+  }
+}
