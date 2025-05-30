@@ -6,27 +6,45 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+require('dotenv').config();
+const { OpenAI } = require('openai');
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-async function getOpenAIResponse(prompt) {
-  const gptRes = await axios.post(
-    'https://api.openai.com/v1/chat/completions',
-    {
+app.post('/generateSteps', async (req, res) => {
+  const goal = req.body.goal;
+
+  if (!goal) {
+    return res.status(400).json({ error: 'Missing goal in request body' });
+  }
+
+  try {
+    const completion = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        { role: 'system', content: 'You are a helpful training assistant.' },
-        { role: 'user', content: prompt }
+        {
+          role: 'system',
+          content: 'You are a helpful assistant who creates clear, step-by-step onboarding instructions.'
+        },
+        {
+          role: 'user',
+          content: `I want to: ${goal}. Please break this down into a numbered list of clear onboarding steps.`
+        }
       ],
       temperature: 0.7
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json'
-      }
-    }
-  );
-  return gptRes.data.choices[0].message.content.trim();
-}
+    });
+
+    const reply = completion.choices[0].message.content;
+    const steps = reply
+      .split('\n')
+      .filter(line => line.match(/^\d+\.\s+/))
+      .map(line => line.replace(/^\d+\.\s*/, '').trim());
+
+    res.json({ steps });
+  } catch (error) {
+    console.error('OpenAI error:', error);
+    res.status(500).json({ error: 'Failed to generate steps from OpenAI' });
+  }
+});
 
 async function getClaudeResponse(prompt) {
   const claudeRes = await axios.post(
@@ -50,44 +68,41 @@ async function getClaudeResponse(prompt) {
   return claudeRes.data.content[0].text.trim();
 }
 
-app.post('/instruction', async (req, res) => {
-  const { context, step } = req.body;
-
+// Endpoint to get screen context using Gemini
+app.get('/screen-context', async (req, res) => {
   try {
-    const prompt = `
-You are a training copilot. The user is currently seeing this on screen: "${context}".
-
-Their current onboarding instruction is: "${step}"
-
-Given this, provide a helpful and concise instruction or nudge to help them complete the step.
-    `;
-
-    let instruction;
-    try {
-      console.log('Attempting OpenAI first...');
-      instruction = await getOpenAIResponse(prompt);
-      console.log('OpenAI response successful');
-    } catch (openAIError) {
-      console.error('OpenAI failed, falling back to Claude:', openAIError.message);
-      try {
-        instruction = await getClaudeResponse(prompt);
-        console.log('Claude fallback successful');
-      } catch (claudeError) {
-        console.error('Both OpenAI and Claude failed:', claudeError.message);
-        throw new Error('Both AI services failed');
-      }
-    }
-
-    res.json({ instruction });
-  } catch (err) {
-    console.error('AI service error:', err.message);
-    res.status(500).json({ error: 'AI services failed' });
+    const context = await getScreenContext();
+    res.json({ context });
+  } catch (error) {
+    console.error('Error getting screen context:', error);
+    res.status(500).json({ error: 'Failed to get screen context' });
   }
 });
+
+const { getOnboardingInstruction } = require('./src/gemini-context');
+
+app.post('/instruction', async (req, res) => {
+  const { step } = req.body;
+
+  if (!step) {
+    return res.status(400).json({ error: 'Missing step' });
+  }
+
+  try {
+    const instruction = await getOnboardingInstruction(step);
+    res.json({ instruction });
+  } catch (err) {
+    console.error('Gemini error:', err.message);
+    res.status(500).json({ error: 'Gemini instruction generation failed' });
+  }
+});
+
 
 app.get('/', (req, res) => {
   res.send('Training Copilot API is running');
 });
 
-const PORT = 4000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

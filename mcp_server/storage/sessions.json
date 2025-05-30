@@ -3,11 +3,43 @@
     "steps": [
       {
         "step": 1,
-        "instruction": "Open commit history"
+        "instruction": "Navigate to the Website or App: Open your preferred web browser or app on your smartphone or tablet, and enter the name of the platform where you want to create a new account."
       },
       {
         "step": 2,
-        "instruction": "delete existing branch"
+        "instruction": "Find the Sign-Up Button: Look for a button or link often labeled as 'Sign Up'  or 'Register'. This is usually located at the top-right corner of the homepage, but may vary depending on the platform."
+      },
+      {
+        "step": 3,
+        "instruction": "Choose Your Preferred Method: Some platforms provide options to sign up with your Google, Facebook, or other social media accounts. You can choose this or opt to create a new account manually."
+      },
+      {
+        "step": 4,
+        "instruction": "Enter Your Details: If you choose to sign up manually, you'll be asked to provide some personal information. This typically includes your full name, a valid email address or phone number, and a password. Some platforms may also ask for your date of birth or other details."
+      },
+      {
+        "step": 5,
+        "instruction": "Create a Password: Choose a strong password that includes a mix of upper and lower case letters, numbers, and symbols. Do not use easily guessable information like your name or date of birth."
+      },
+      {
+        "step": 6,
+        "instruction": "Accept the Terms and Conditions: You'll usually find a checkbox asking you to agree to the terms and conditions or privacy policy of the platform. Read these carefully before agreeing."
+      },
+      {
+        "step": 7,
+        "instruction": "Verify Your Email or Phone Number: After entering all the details, click on the 'Sign Up' button. You'll likely be sent a verification email or text message with a link or code. Click the link or enter the code to verify your account."
+      },
+      {
+        "step": 8,
+        "instruction": "Setup Your Profile: Once your account is verified, you can further personalize your account. This may include uploading a profile photo, entering your interests, or linking your social media accounts."
+      },
+      {
+        "step": 9,
+        "instruction": "Finalize Setup: After setting up your profile, explore the platform to understand its features and settings. You might want to adjust privacy settings or notification preferences."
+      },
+      {
+        "step": 10,
+        "instruction": "Start Using the Platform: You're all set! You can now start using your new account."
       }
     ],
     "progress": 0
